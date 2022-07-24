@@ -13,7 +13,7 @@ pipeline {
     post {
         always {
             mail to:"buildAdmin@mycompany.com"
-            subject:"STATUS FOR PROJECT:"${currentBuild.fullDisplayName}"
+            subject:"STATUS FOR PROJECT:${currentBuild.fullDisplayName}"
             body:"RESULT:${currenytBuild.result}"
         }
     }
