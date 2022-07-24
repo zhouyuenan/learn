@@ -1,0 +1,20 @@
+pipeline {
+    agent 'test'
+    stages {
+        stage('Source') {
+            steps {
+                //做一些工作
+            }
+        }
+        stage('Build') {
+
+        }
+    }
+    post {
+        always {
+            mail to:"buildAdmin@mycompany.com"
+            subject:"STATUS FOR PROJECT:"${currentBuild.fullDisplayName}"
+            body:"RESULT:${currenytBuild.result}"
+        }
+    }
+}
