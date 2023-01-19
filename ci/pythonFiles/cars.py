@@ -11,3 +11,13 @@ print(sorted(cars))
 
 print("\nHere is the original list again:")
 print(cars)
+
+print(cars)
+
+cars.reverse()
+print(cars)
+
+cars = ['bmw', 'audi', 'toyota', 'subaru']
+print(len(cars))
+
+
