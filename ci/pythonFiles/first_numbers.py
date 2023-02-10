@@ -5,6 +5,7 @@
 # History:
 #       2023/02/10 周月南 First release
 # ------------------------------------------------
-tests = ['test1', 'test2', 'test3']
-for test in tests:
-    print(test)
+for value in range(1, 5):
+    print(value)
+for value in range(1, 6):
+    print(value)
