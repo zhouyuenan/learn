@@ -5,13 +5,8 @@
 # History:
 #       2023/02/10 周月南 First release
 # ------------------------------------------------
-def function_test():
-    for value in range(1, 5):
-        print(value)
-    for value in range(1, 6):
-        print(value)
-    for value in range(6):
-        print(value)
-function_test()
-
-
+animals = ['dog', 'cat', 'snake']
+for animal in animals:
+    print(animal)
+    print(f"A {animal} would make a great pet.")
+print("Any of these animals would make a great pet!")
