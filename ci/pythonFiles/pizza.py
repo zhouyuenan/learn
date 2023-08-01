@@ -5,8 +5,8 @@
 # History:
 #       2023/02/10 周月南 First release
 # ------------------------------------------------
-pizzas = ['test1', 'test2', 'test3']
-for pizza in pizzas:
-    print(f"I like {pizza} pizza.\n")
-print("I relly love pizza!")
-
+def make_pizza(size, *toppings):
+    """概述要制作的披萨。"""
+    print(f"\nMaking a {size}-inch pizza with the following toppings:")
+    for topping in toppings:
+        print(f"- {topping}")
