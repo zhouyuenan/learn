@@ -14,15 +14,21 @@ node2 = '10.0.0.2'
 
 
 def build_draw():
+    """此函数用于绘制网络拓扑图。"""
     graph = nx.DiGraph()
     graph.add_node(node1)
     graph.add_node(node2)
     graph.add_edge('10.0.0.3', '10.0.0.4')
-    nx.draw(graph, with_labels=True)
+    nx.draw(graph, with_labels=True, node_size=100)
+    x = np.linspace(0.05, 10, 1000)
+    y = np.sin(x)
+    plt.plot(label="typology network graph")
+    plt.legend(loc="lower left")
     plt.show()
 
 
 def build_main():
+    """此函数用于主函数入口。"""
     build_draw()
 
 
