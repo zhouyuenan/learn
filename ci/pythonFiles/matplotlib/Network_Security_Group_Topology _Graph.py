@@ -5,6 +5,9 @@
 # History:
 #       2023/07/30 周月南 First release
 # ------------------------------------------------
+# 1.根据IP范围确定顶点大小；
+# 2.从Excel文件中读取数据；
+# 3.画出3D网络拓扑图；
 import matplotlib.pyplot as plt
 import numpy as np
 import networkx as nx
@@ -13,22 +16,40 @@ node1 = '10.0.0.1'
 node2 = '10.0.0.2'
 
 
+def build_obtain_data(file_name):
+    """此函数用于读取Excel文件中的数据。"""
+    print("test")
+
+
 def build_draw():
     """此函数用于绘制网络拓扑图。"""
     graph = nx.DiGraph()
     graph.add_node(node1)
     graph.add_node(node2)
     graph.add_edge('10.0.0.3', '10.0.0.4')
-    nx.draw(graph, with_labels=True, node_size=100)
+    ip_range = 24
+    if ip_range == 16:
+        node_size_range = 10000
+    elif ip_range == 24:
+        node_size_range = 1000
+    elif ip_range == 32:
+        node_size_range = 100
+    nx.draw(graph, with_labels=True, node_size=node_size_range)
     x = np.linspace(0.05, 10, 1000)
     y = np.sin(x)
-    plt.plot(label="typology network graph")
+    plt.plot(x, y, label="topology network graph")
     plt.legend(loc="lower left")
+    plt.xlim(-10, 10)
+    plt.ylim(-1, 1)
+    plt.xlabel("x-axis")
+    plt.ylabel("y-axis")
+    plt.title("topology Network Security Groups")
     plt.show()
 
 
 def build_main():
     """此函数用于主函数入口。"""
+    build_obtain_data(file_name="test")
     build_draw()
 
 
