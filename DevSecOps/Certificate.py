@@ -14,8 +14,12 @@ from datetime import datetime, timedelta
 
 
 class Certificate:
-    @staticmethod
-    def obtain_certificate_expired_time(domain: str) -> str:
+    def __init__(self) -> None:
+        self.notBefore = None
+        self.notAfter = None
+        self.countryName = None
+
+    def obtain_certificate_expired_time(self, domain: str) -> str:
         """
         This function is used to obtain the certificate expired time by domain name
         :param domain: This parameter is used to define the domain name
@@ -28,9 +32,32 @@ class Certificate:
                 print(ssock.version())
                 certificate_details = ssock.getpeercert()
                 print(certificate_details)
+                self.notBefore = certificate_details['notBefore']
+                self.notAfter = certificate_details['notAfter']
                 print(f"The certificate issued time is: {certificate_details['notBefore']}")
                 print(f"The certificate expired time is {certificate_details['notAfter']}")
+                for i in range(len(certificate_details['subject'])):
+                    print(certificate_details['subject'][i][0][0])
+                    if certificate_details['subject'][i][0][0] in 'countryName':
+                        print(f"The certificate country name is {certificate_details['subject'][i][0][1]}")
+                        self.countryName = certificate_details['subject'][i][0][1]
+                        print(self.countryName, self.notBefore, self.notAfter)
+
         return certificate_details['notAfter']
+
+    @staticmethod
+    def time_type_calculation(time_datetime) -> datetime:
+        """
+        This function is used to calculate the expired date for the certificate
+        :param time_datetime:
+        :return: Return the certificate validity date
+        """
+        remaining_time = time_datetime - datetime.utcnow()
+        print(remaining_time)
+        if remaining_time < timedelta(days=30):
+            pass
+        return remaining_time
+
 
     @staticmethod
     def time_type_conversion(time_str: str) -> datetime:
@@ -45,52 +72,26 @@ class Certificate:
         print(date_time)
         return date_time
 
-    @staticmethod
-    def time_type_calculation(time_datetime) -> datetime:
+    def trigger_jenkins_pipeline(self, job) -> None:
         """
-        This function is used to calculate the expired date for the certificate
-        :param time_datetime:
-        :return:
-        """
-        remaining_time = time_datetime - datetime.utcnow()
-        print(remaining_time)
-        if remaining_time < timedelta(days=30):
-            pass
-        return None
-
-    @staticmethod
-    def trigger_Jenkins_pipeline(job) -> None:
-        """
-
-        :param job:
-        :return:
+        This function is used to trigger the Jenkins pipeline to make the certificate
+        :param job: This parameter is used to define the Jenkins job name
+        :return: Return None
         """
         connection = jenkins.Jenkins("http://47.109.56.146:32000/", "zhouyuenan", "zyb19990712")
-        connection.build_job(job)
+        try:
+            connection.build_job(job, {"Domain_Name": self.notBefore, "Country": self.countryName})
+            print(self.notAfter, self.countryName)
+        except NameError as e:
+            print(e)
 
 if __name__ == '__main__':
     certificate = Certificate()
-    time_str_type = certificate.obtain_certificate_expired_time(domain="gitee.com")
+    time_str_type = certificate.obtain_certificate_expired_time(domain="www.baidu.com")
     time_datetime_type = certificate.time_type_conversion(time_str=time_str_type)
     certificate.time_type_calculation(time_datetime_type)
-    certificate.trigger_Jenkins_pipeline("Test1")
-# {'subject': ((('countryName', 'ID'),),
-#              (('stateOrProvinceName', 'Daerah Khusus Ibukota Jakarta'),),
-#              (('localityName', 'Jakarta Selatan'),),
-#              (('organizationName', 'PT AIA  Financial'),),
-#              (('commonName', 'irecruit.aia.id'),)),
-#  'issuer': ((('countryName', 'US'),),
-#             (('organizationName', 'DigiCert Inc'),),
-#             (('commonName', 'DigiCert Global G2 TLS RSA SHA256 2020 CA1'),)),
-#  'version': 3,
-#  'serialNumber': '0EF872466C2978D2C5C620E85371C555',
-#  'notBefore': 'May 14 00:00:00 2024 GMT',
-#  'notAfter': 'May 13 23:59:59 2025 GMT',
-#  'subjectAltName': (('DNS', 'irecruit.aia.id'),),
-#  'OCSP': ('http://ocsp.digicert.com',),
-#  'caIssuers': ('http://cacerts.digicert.com/DigiCertGlobalG2TLSRSASHA2562020CA1-1.crt',),
-#  'crlDistributionPoints': ('http://crl3.digicert.com/DigiCertGlobalG2TLSRSASHA2562020CA1-1.crl',
-#                            'http://crl4.digicert.com/DigiCertGlobalG2TLSRSASHA2562020CA1-1.crl')}
+    certificate.trigger_jenkins_pipeline("Test")
+
 
 
 
