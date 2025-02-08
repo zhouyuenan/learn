@@ -91,7 +91,3 @@ if __name__ == '__main__':
     time_datetime_type = certificate.time_type_conversion(time_str=time_str_type)
     certificate.time_type_calculation(time_datetime_type)
     certificate.trigger_jenkins_pipeline("Test")
-
-
-
-
