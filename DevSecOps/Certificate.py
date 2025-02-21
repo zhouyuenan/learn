@@ -10,6 +10,7 @@
 import jenkins
 import socket
 import ssl
+import xlwings as xw
 from datetime import datetime, timedelta
 
 
@@ -46,6 +47,19 @@ class Certificate:
         return certificate_details['notAfter']
 
     @staticmethod
+    def time_type_conversion(time_str: str) -> datetime:
+        """
+        This function is used to convert the certificate type from string type to datetime type
+        :param time_str: Thus parameter is used to define the time of string type
+        :return: Return the time of datatime type
+        """
+        time_str_conversion = time_str
+        date_time = datetime.strptime(time_str_conversion, "%b %d %H:%M:%S %Y GMT")
+        print(time_str_conversion)
+        print(date_time)
+        return date_time
+
+    @staticmethod
     def time_type_calculation(time_datetime) -> datetime:
         """
         This function is used to calculate the expired date for the certificate
@@ -58,19 +72,16 @@ class Certificate:
             pass
         return remaining_time
 
-
     @staticmethod
-    def time_type_conversion(time_str: str) -> datetime:
-        """
-        This function is used to convert the certificate type from string type to datetime type
-        :param time_str: Thus parameter is used to define the time of string type
-        :return: Return the time of datatime type
-        """
-        time_str_conversion = time_str
-        date_time = datetime.strptime(time_str_conversion, "%b %d %H:%M:%S %Y GMT")
-        print(time_str_conversion)
-        print(date_time)
-        return date_time
+    def update_excel(expire_time) -> None:
+        app = xw.App(visible=False, add_book=False)
+        app.display_alerts = False
+        workbook = app.books.open("D:/PycharmProjects/learn/DevSecOps/Certificate.xlsx")
+        worksheet = workbook.sheets["Certificate"]
+        worksheet.range("B2").value = expire_time
+        workbook.save()
+        workbook.close()
+        app.quit()
 
     def trigger_jenkins_pipeline(self, job) -> None:
         """
@@ -89,5 +100,6 @@ if __name__ == '__main__':
     certificate = Certificate()
     time_str_type = certificate.obtain_certificate_expired_time(domain="www.baidu.com")
     time_datetime_type = certificate.time_type_conversion(time_str=time_str_type)
-    certificate.time_type_calculation(time_datetime_type)
+    expired_time = certificate.time_type_calculation(time_datetime_type)
+    certificate.update_excel(expired_time)
     certificate.trigger_jenkins_pipeline("Test")
