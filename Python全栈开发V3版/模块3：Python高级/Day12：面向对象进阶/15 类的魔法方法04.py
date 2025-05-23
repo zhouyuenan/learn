@@ -26,4 +26,6 @@ cache = Cache()
 # cache.remove("age")
 # print(cache.show())
 # print(len(cache))
-
+print("test")
+print("test")
+print("test")
